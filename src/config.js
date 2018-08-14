@@ -3,6 +3,6 @@ module.exports = {
 
   GITHUB_API_URL: 'https://api.github.com',
 
-  API_V1: '/crypto_api',
+  API_V1: '/api',
   API_PORT: process.env.API_PORT || 3000,
 };
