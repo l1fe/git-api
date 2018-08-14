@@ -4,13 +4,29 @@ import querystring from 'querystring';
 import { GITHUB_API_URL } from '../../config';
 
 function gitService() {
+  // Get repository by id
+  const get = async ({ id }) => {
+    if (!id) {
+      return Promise.reject(new Error('Repository id is not specified'));
+    }
+    const url = `${GITHUB_API_URL}/repositories/${id}`;
+
+    try {
+      const data = await fetch(url);
+      const repo = await data.json();
+      return repo;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
   // Search for repositories with given params
-  const search = async ({ name }) => {
-    if (!name) {
-      return Promise.reject(new Error('Please specify the repository name'));
+  const search = async ({ query }) => {
+    if (!query) {
+      return Promise.reject(new Error('Search query is not specified'));
     }
 
-    const queryParams = querystring.stringify({ q: name });
+    const queryParams = querystring.stringify({ q: query });
     const url = `${GITHUB_API_URL}/repositories?${queryParams}`;
 
     try {
@@ -23,6 +39,7 @@ function gitService() {
   };
 
   return {
+    get,
     search,
   };
 }

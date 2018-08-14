@@ -19,6 +19,7 @@
     "indent": [2, 2],
     "no-tabs": 0,
     "no-unused-expressions": 0,
-    "chai-friendly/no-unused-expressions": 2
+    "chai-friendly/no-unused-expressions": 2,
+    "object-curly-newline": 0,
   }
 }

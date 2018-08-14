@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { expect } from 'chai';
 import httpStatus from 'http-status';
 
 import { API_V1 } from '../../config';
@@ -12,7 +13,9 @@ describe('# Repo API', () => {
       request(app)
         .get(url)
         .expect(httpStatus.OK)
-        .then(() => {
+        .then((resp) => {
+          const repos = resp.body;
+          expect(repos).to.have.lengthOf(5);
           done();
         })
         .catch(done);
