@@ -1,7 +1,7 @@
 import Bookmark from '../models/bookmark.model';
 
 // Bookmark Repository
-function repoRepository() {
+function bookmarkRepository() {
   // Store all bookmarks in-memory
   const bookmarks = [];
 
@@ -44,4 +44,4 @@ function repoRepository() {
   };
 }
 
-export default repoRepository();
+export default bookmarkRepository();
