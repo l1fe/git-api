@@ -27,12 +27,12 @@ function gitService() {
     }
 
     const queryParams = querystring.stringify({ q: query });
-    const url = `${GITHUB_API_URL}/repositories?${queryParams}`;
+    const url = `${GITHUB_API_URL}/search/repositories?${queryParams}`;
 
     try {
       const data = await fetch(url);
       const repos = await data.json();
-      return repos;
+      return repos.items;
     } catch (err) {
       return Promise.reject(err);
     }

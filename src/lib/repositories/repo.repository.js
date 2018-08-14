@@ -17,7 +17,7 @@ function repoRepository() {
   };
 
   // Search a repository with given name query
-  const search = async ({ name: query }) => {
+  const search = async ({ query }) => {
     try {
       const repos = await gitService.search({ query });
       return repos
