@@ -1,7 +1,5 @@
-import shortid from 'shortid';
-
-function Bookmark({ repoId }) {
-  this.id = shortid.generate();
+function Bookmark({ id, repoId }) {
+  this.id = id;
   this.repoId = repoId;
 }
 

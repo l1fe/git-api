@@ -1,3 +1,5 @@
+import shortid from 'shortid';
+
 import Bookmark from '../models/bookmark.model';
 
 // Bookmark Repository
@@ -7,7 +9,7 @@ function bookmarkRepository() {
 
   // Create new bookmark
   const create = async ({ repoId }) => {
-    const bookmark = new Bookmark({ repoId });
+    const bookmark = new Bookmark({ id: shortid.generate(), repoId });
     bookmarks.push(bookmark);
     return Promise.resolve(bookmark);
   };
