@@ -1,8 +1,37 @@
 {
   "name": "git-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "git@github.com:l1fe/git-api.git",
   "author": "Igor Naumov <igor.naumov.17@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx nodemon --exec \"NODE_ENV=development API_PORT=3000 npx babel-node src\"",
+    "start": "npm run dev",
+    "eslint": "npx eslint src",
+    "lint": "npm run eslint"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.6",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-chai-friendly": "^0.4.1",
+    "eslint-plugin-import": "^2.14.0",
+    "nodemon": "^1.18.3",
+    "pre-git": "^3.17.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.3"
+  },
+  "config": {
+    "pre-git": {
+      "pre-commit": [
+        "npm run lint"
+      ]
+    }
+  }
 }

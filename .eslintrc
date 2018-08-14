@@ -1,0 +1,24 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "allowImportExportEverywhere": true
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "airbnb-base"
+  ],
+  "plugins": [
+     "chai-friendly"
+  ],
+  "rules": {
+    "indent": [2, 2],
+    "no-tabs": 0,
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2
+  }
+}
