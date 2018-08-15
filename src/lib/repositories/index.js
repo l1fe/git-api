@@ -1,5 +1,5 @@
-import repoRepository from './repo.repository';
-import bookmarkRepository from './bookmark.repository';
+const repoRepository = require('./repo.repository');
+const bookmarkRepository = require('./bookmark.repository');
 
 function repositoryFactory() {
   const repos = {};
@@ -16,4 +16,4 @@ function repositoryFactory() {
   return repos;
 }
 
-export default repositoryFactory();
+module.exports = repositoryFactory();
