@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 const repos = require('../');
 
-describe('# Repositories factory unit tests', () => {
+describe('# getRepositories unit tests', () => {
   it('should contain accessible repoRepository', () => {
     expect(repos).to.have.property('repo').that.is.an('object');
     expect(repos.repo).to.have.property('create').that.is.a('function');

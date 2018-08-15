@@ -1,7 +1,7 @@
 const repoRepository = require('./repo.repository');
 const bookmarkRepository = require('./bookmark.repository');
 
-function repositoryFactory() {
+function getRepositories() {
   const repos = {};
 
   const repositories = [
@@ -16,4 +16,4 @@ function repositoryFactory() {
   return repos;
 }
 
-module.exports = repositoryFactory();
+module.exports = getRepositories();
