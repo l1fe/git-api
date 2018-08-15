@@ -1,6 +1,4 @@
-import RepoRepository from '../../lib/repositories/repo.repository';
-
-const repoRepository = new RepoRepository();
+const repoRepository = require('../../lib/repositories/repo.repository');
 
 // Get repos
 async function getRepos(req, res, next) {

@@ -5,4 +5,4 @@ function Repo({ id, name, language, starsCount }) {
   this.starsCount = starsCount;
 }
 
-export default Repo;
+module.exports = Repo;

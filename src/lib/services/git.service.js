@@ -5,7 +5,7 @@ import { GITHUB_API_URL } from '../../config';
 
 function gitService() {
   // Get repository by id
-  const get = async ({ id }) => {
+  const get = async (id) => {
     if (!id) {
       return Promise.reject(new Error('Repository id is not specified'));
     }
@@ -21,7 +21,7 @@ function gitService() {
   };
 
   // Search for repositories with given params
-  const search = async ({ query }) => {
+  const search = async (query) => {
     if (!query) {
       return Promise.reject(new Error('Search query is not specified'));
     }
@@ -44,4 +44,4 @@ function gitService() {
   };
 }
 
-export default gitService();
+module.exports = gitService();
