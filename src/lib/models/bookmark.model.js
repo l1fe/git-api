@@ -3,4 +3,4 @@ function Bookmark({ id, repoId }) {
   this.repoId = repoId;
 }
 
-export default Bookmark;
+module.exports = Bookmark;

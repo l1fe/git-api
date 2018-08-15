@@ -1,43 +1,50 @@
-import shortid from 'shortid';
+// We use require to provide compatibility with proxyquire (to stub this dependency in unit tests)
+const shortid = require('shortid');
 
-import Bookmark from '../models/bookmark.model';
+const Bookmark = require('../models/bookmark.model');
+const ramStorage = require('../ram-storage');
 
-// Bookmark Repository
-function BookmarkRepository({ storage }) {
-  this.storage = storage;
+// Bookmark repository
+function bookmarkRepository() {
+  const create = async function create({ repoId }) {
+    const bookmark = { id: shortid.generate(), repoId };
+    try {
+      const savedBookmark = await ramStorage.addItem('bookmarks', bookmark);
+      return Promise.resolve(savedBookmark);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
+  const get = async function get({ id }) {
+    try {
+      const bookmark = await ramStorage.getItemById('bookmarks', id);
+      return Promise.resolve(new Bookmark(bookmark));
+    } catch (err) {
+      return Promise.reject(new Error('Bookmark not found'));
+    }
+  };
+
+  const remove = async function remove({ id }) {
+    try {
+      await ramStorage.removeItemById('bookmarks', id);
+      return Promise.resolve();
+    } catch (err) {
+      return Promise.reject(new Error('Bookmark not found'));
+    }
+  };
+
+  const clear = async function clear() {
+    await ramStorage.clearCollection('bookmarks');
+    return Promise.resolve();
+  };
+
+  return {
+    create,
+    get,
+    remove,
+    clear,
+  };
 }
 
-// Create a new bookmark
-BookmarkRepository.prototype.create = async function create({ repoId }) {
-  const bookmark = new Bookmark({ id: shortid.generate(), repoId });
-  const savedBookmark = await this.storage.addItem('bookmarks', bookmark);
-  return Promise.resolve(savedBookmark);
-};
-
-// Get a bookmark by id
-BookmarkRepository.prototype.get = async function get({ id }) {
-  try {
-    const bookmark = await this.storage.getItemById('bookmarks', id);
-    return Promise.resolve(bookmark);
-  } catch (err) {
-    return Promise.reject(new Error('Bookmark not found'));
-  }
-};
-
-// Remove a bookmark by id
-BookmarkRepository.prototype.remove = async function remove({ id }) {
-  try {
-    const bookmark = await this.storage.removeItemById('bookmarks', id);
-    return Promise.resolve(bookmark);
-  } catch (err) {
-    return Promise.reject(new Error('Bookmark not found'));
-  }
-};
-
-// Remove all bookmarks
-BookmarkRepository.prototype.clear = async function clear() {
-  await this.storage.clearCollection('bookmarks');
-  return Promise.resolve();
-};
-
-export default BookmarkRepository;
+module.exports = bookmarkRepository();

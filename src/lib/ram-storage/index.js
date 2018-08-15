@@ -54,4 +54,4 @@ function ramStorage() {
   };
 }
 
-export default ramStorage();
+module.exports = ramStorage();
