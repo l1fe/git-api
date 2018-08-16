@@ -16,13 +16,15 @@ const item = {
   language: repoLanguage,
   starsCount: repoStarsCount,
 };
+const repositoryMock = require('../../mock-data/repository.mock.json');
+const searchRepositoriesMock = require('../../mock-data/search-repositories.mock.json');
+
 const alwaysReject = () => Promise.reject(new Error('Got error'));
-const alwaysResolveWithItem = () => Promise.resolve(item);
-const alwaysResolveWithItems = () => Promise.resolve([item]);
+const alwaysResolveWithItem = itemToResolveWith => () => Promise.resolve(itemToResolveWith);
 
 const gitServiceStub = {
-  get: alwaysResolveWithItem,
-  search: alwaysResolveWithItems,
+  get: alwaysResolveWithItem(repositoryMock),
+  search: alwaysResolveWithItem(searchRepositoriesMock),
 };
 
 const repoRepository = proxyquire('../repo.repository', {

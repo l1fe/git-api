@@ -33,6 +33,7 @@ function repoRepository() {
     try {
       const repos = await gitService.search(query);
       return repos
+        .items
         .slice(0, 5)
         .map(({ id, name, language, starsCount }) => (
           new Repo({ id, name, language, starsCount })

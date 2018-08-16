@@ -1,7 +1,5 @@
-import fetch from 'node-fetch';
-import querystring from 'querystring';
-
-import { GITHUB_API_URL } from '../../config';
+const { GITHUB_API_URL } = require('../../config');
+const apiService = require('./api.service');
 
 function gitService() {
   // Get repository by id
@@ -10,11 +8,9 @@ function gitService() {
       return Promise.reject(new Error('Repository id is not specified'));
     }
     const url = `${GITHUB_API_URL}/repositories/${id}`;
-
     try {
-      const data = await fetch(url);
-      const repo = await data.json();
-      return repo;
+      const resp = await apiService.get(url);
+      return resp;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -26,13 +22,12 @@ function gitService() {
       return Promise.reject(new Error('Search query is not specified'));
     }
 
-    const queryParams = querystring.stringify({ q: query });
-    const url = `${GITHUB_API_URL}/search/repositories?${queryParams}`;
+    const url = `${GITHUB_API_URL}/search/repositories`;
+    const params = { q: query };
 
     try {
-      const data = await fetch(url);
-      const repos = await data.json();
-      return repos.items;
+      const resp = await apiService.get(url, { params });
+      return resp;
     } catch (err) {
       return Promise.reject(err);
     }
