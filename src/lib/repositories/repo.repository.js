@@ -37,13 +37,13 @@ function repoRepository() {
   };
 
   // Search for a repositories with given query options
-  const search = async function filter(options) {
+  const search = async function filter(options, showBookmarked) {
     try {
       const resp = await gitService.search(options);
       const repos = resp.map(({ id, name, language, stars }) => {
         // Get bookmarked status from in-memory storage
         const savedRepo = ramStorage.get(id);
-        const bookmarked = savedRepo && savedRepo.bookmarked;
+        const bookmarked = !!(savedRepo && savedRepo.bookmarked);
         return new Repo({ id, name, language, stars, bookmarked });
       });
 
@@ -51,6 +51,10 @@ function repoRepository() {
       repos.forEach((repo) => {
         ramStorage.addOrUpdate(repo);
       });
+
+      if (showBookmarked) {
+        return repos.filter(item => item.bookmarked);
+      }
 
       return repos;
     } catch (err) {

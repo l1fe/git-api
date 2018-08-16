@@ -4,6 +4,7 @@ const requestValidation = {
   getRepos: {
     query: {
       name: Joi.string(),
+      bookmarked: Joi.boolean(),
     },
   },
   getRepo: {

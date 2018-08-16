@@ -3,10 +3,9 @@ const repoRepository = require('../../lib/repositories/repo.repository');
 function repoController() {
   // Get repos
   const getRepos = async function getRepos(req, res, next) {
-    const { name } = req.query;
-
+    const { name, bookmarked } = req.query;
     try {
-      const repos = await repoRepository.search({ name });
+      const repos = await repoRepository.search({ name }, bookmarked);
       return res.json(repos);
     } catch (err) {
       return next(err);
