@@ -1,62 +1,51 @@
-// Very simple abstraction of in-memory db
-// Assume we have only one connection by default
+// Very simple storage
 
 function ramStorage() {
-  const collections = { };
+  const storage = { };
 
-  const getOrCreateCollection = (collectionName) => {
-    if (!collections[collectionName]) {
-      collections[collectionName] = [];
+  // Set an item for the given key
+  const setItem = async (key, value) => {
+    if (storage[key]) {
+      return Promise.reject(new Error('Value for this key already exists'));
     }
-    return collections[collectionName];
+    storage[key] = value;
+    return value;
   };
 
-  // Add an item to specific collection
-  const addItem = async (collectionName, item) => {
-    const collection = getOrCreateCollection(collectionName);
-    collection.push(item);
-    return item;
-  };
-
-  // Get an item from specific collection
-  const getItemById = async (collectionName, id) => {
-    const collection = getOrCreateCollection(collectionName);
-    const item = collection.find(collectionItem => typeof collectionItem === 'object' && collectionItem.id === id);
-    if (!item) {
+  // Get an item with the given key
+  const getItem = async (key) => {
+    if (!storage[key]) {
       return Promise.reject(new Error('Item not found'));
     }
-    return item;
+    return storage[key];
   };
 
-  // Get all items that match given params from specific collection
-  const getItems = async (collectionName, query) => {
-    const collection = getOrCreateCollection(collectionName);
-    return collection.filter(query);
+  // Get all items that match the given query
+  const queryItems = async (query) => {
+    const items = Object.values(storage).filter(query);
+    return items;
   };
 
-  // Remove an item from specific collection
-  const removeItemById = async (collectionName, id) => {
-    const collection = getOrCreateCollection(collectionName);
-    const idx = collection.findIndex(item => typeof item === 'object' && item.id === id);
-    if (idx === -1) {
+  // Remove an item with the given key
+  const removeItem = async (key) => {
+    if (!storage[key]) {
       return Promise.reject(new Error('Item not found'));
     }
-    collection.split(idx, 1);
+    delete storage[key];
     return true;
   };
 
-  // Remove a collection
-  const clearCollection = async (collectionName) => {
-    const collection = getOrCreateCollection(collectionName);
-    collection.length = 0;
+  // Empty the storage
+  const clear = async () => {
+    Object.keys(storage).forEach(key => delete storage[key]);
   };
 
   return {
-    addItem,
-    getItemById,
-    getItems,
-    removeItemById,
-    clearCollection,
+    setItem,
+    getItem,
+    queryItems,
+    removeItem,
+    clear,
   };
 }
 

@@ -9,35 +9,47 @@ function bookmarkRepository() {
   const create = async function create({ repoId }) {
     const bookmark = { id: shortid.generate(), repoId };
     try {
-      const savedBookmark = await ramStorage.addItem('bookmarks', bookmark);
+      const savedBookmark = await ramStorage.setItem(bookmark.id, bookmark);
       return savedBookmark;
     } catch (err) {
       return Promise.reject(err);
     }
   };
 
-  const get = async function get({ id }) {
+  const get = async function get(id) {
+    if (!id) {
+      return Promise.reject(new Error('Item id is not specified'));
+    }
+
     try {
-      const bookmark = await ramStorage.getItemById('bookmarks', id);
+      const bookmark = await ramStorage.getItem(id);
       return new Bookmark(bookmark);
     } catch (err) {
       return Promise.reject(new Error('Bookmark not found'));
     }
   };
 
-  const filter = async function filter({ id, repoId }) {
-    const query = item => (!id || item.id === id) && (!repoId || item.repoId === repoId);
+  const filter = async function filter({ repoId } = {}) {
+    const query = item => (!repoId || item.repoId === repoId);
     try {
-      const bookmarks = await ramStorage.getItems('bookmarks', query);
+      const bookmarks = await ramStorage.queryItems(query);
       return bookmarks;
     } catch (err) {
       return Promise.reject(new Error(err));
     }
   };
 
-  const remove = async function remove({ id }) {
+  const list = async function list() {
+    return filter();
+  };
+
+  const remove = async function remove(id) {
+    if (!id) {
+      return Promise.reject(new Error('Item id is not specified'));
+    }
+
     try {
-      await ramStorage.removeItemById('bookmarks', id);
+      await ramStorage.removeItem(id);
       return true;
     } catch (err) {
       return Promise.reject(new Error('Bookmark not found'));
@@ -45,14 +57,19 @@ function bookmarkRepository() {
   };
 
   const clear = async function clear() {
-    await ramStorage.clearCollection('bookmarks');
-    return true;
+    try {
+      await ramStorage.clear();
+      return true;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   };
 
   return {
     create,
     get,
     filter,
+    list,
     remove,
     clear,
   };
