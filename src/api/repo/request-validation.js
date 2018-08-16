@@ -1,4 +1,4 @@
-import Joi from 'joi';
+const Joi = require('joi');
 
 const requestValidation = {
   getRepos: {
@@ -8,4 +8,4 @@ const requestValidation = {
   },
 };
 
-export default requestValidation;
+module.exports = requestValidation;

@@ -1,6 +1,6 @@
-import { expect } from 'chai';
+const { expect } = require('chai');
 
-import Repo from '../repo.model';
+const Repo = require('../repo.model');
 
 describe('Repo Model', () => {
   it('should construct valid model with given params', () => {

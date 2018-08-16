@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import validate from 'express-validation';
+const { Router } = require('express');
+const validate = require('express-validation');
 
-import requestValidation from './request-validation';
-import repoCtrl from './repo.controller';
+const requestValidation = require('./request-validation');
+const repoController = require('./repo.controller');
 
 const router = Router();
 
@@ -11,6 +11,6 @@ router.route('/')
    * GET /repos
    * Get all GitHub repositories with given params
    */
-  .get(validate(requestValidation.getRepos), repoCtrl.getRepos);
+  .get(validate(requestValidation.getRepos), repoController.getRepos);
 
-export default router;
+module.exports = router;

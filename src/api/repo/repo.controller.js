@@ -1,15 +1,21 @@
 const repoRepository = require('../../lib/repositories/repo.repository');
 
-// Get repos
-async function getRepos(req, res, next) {
-  const { q: query } = req.query;
+function repoController() {
+  // Get repos
+  const getRepos = async function getRepos(req, res, next) {
+    const { q: query } = req.query;
 
-  try {
-    const repos = await repoRepository.search({ query });
-    return res.json(repos);
-  } catch (err) {
-    return next(err);
-  }
+    try {
+      const repos = await repoRepository.search({ query });
+      return res.json(repos);
+    } catch (err) {
+      return next(err);
+    }
+  };
+
+  return {
+    getRepos,
+  };
 }
 
-export default { getRepos };
+module.exports = repoController();

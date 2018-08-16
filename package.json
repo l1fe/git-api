@@ -37,7 +37,6 @@
     "express-validation": "^1.0.2",
     "http-status": "^1.2.0",
     "joi": "^13.6.0",
-    "node-fetch": "^2.2.0",
     "shortid": "^2.2.12"
   },
   "config": {

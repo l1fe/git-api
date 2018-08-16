@@ -1,7 +1,9 @@
-import proxyquire from 'proxyquire';
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import sinon from 'sinon';
+const proxyquire = require('proxyquire');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const sinon = require('sinon');
+
+const { expect } = chai;
 
 chai.use(chaiAsPromised);
 

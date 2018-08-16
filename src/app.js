@@ -34,4 +34,4 @@ app.use((err, req, res) => {
 // Setup API routes
 app.use(API_V1, api);
 
-export default app;
+module.exports = app;
