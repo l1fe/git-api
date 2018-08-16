@@ -30,8 +30,7 @@ function repoController() {
     const { bookmarked } = req.body;
 
     try {
-      const repo = await repoRepository.get(id);
-      repo.toggleBookmark(bookmarked);
+      const repo = await repoRepository.update(id, { bookmarked });
       return res.json(repo);
     } catch (err) {
       return next(err);

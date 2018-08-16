@@ -20,11 +20,11 @@ function repoRepository() {
   };
 
   // Get a repo by id (with in-memory caching)
-  const get = async function get(repoId) {
-    const savedRepo = ramStorage.get(repoId);
+  const get = async function get(id) {
+    const savedRepo = ramStorage.get(id);
     if (!savedRepo) {
       try {
-        const { id, name, language, stars } = await gitService.get(repoId);
+        const { name, language, stars } = await gitService.get(id);
         const repo = new Repo({ id, name, language, stars, bookmarked: false });
         ramStorage.addOrUpdate(id, repo);
         return repo;
@@ -32,6 +32,27 @@ function repoRepository() {
         return Promise.reject(err);
       }
     }
+
+    return savedRepo;
+  };
+
+  // Update a repo by id
+  const update = async function update(id, values) {
+    let savedRepo = ramStorage.get(id);
+
+    if (!savedRepo) {
+      try {
+        const { name, language, stars } = await gitService.get(id);
+        const repo = new Repo({ id, name, language, stars, bookmarked: false, ...values });
+        ramStorage.addOrUpdate(id, repo);
+        return repo;
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    }
+
+    savedRepo = { ...savedRepo, ...values };
+    ramStorage.addOrUpdate(id, savedRepo);
 
     return savedRepo;
   };
@@ -49,11 +70,18 @@ function repoRepository() {
 
       // Put those items into in-memory storage
       repos.forEach((repo) => {
-        ramStorage.addOrUpdate(repo);
+        ramStorage.addOrUpdate(repo.id, repo);
       });
 
       if (showBookmarked) {
-        return repos.filter(item => item.bookmarked);
+        // In case we don't have any options and just want to show only bookmarked ones
+        // Check other elements that were cached before and not included in the current API call
+        const reposIds = repos.map(({ id }) => id);
+        const otherRepos = ramStorage.queryItems(item => (
+          !reposIds.includes(item.id) && item.bookmarked
+        ));
+        const currentRepos = repos.filter(item => item.bookmarked);
+        return [...currentRepos, ...otherRepos];
       }
 
       return repos;
@@ -66,6 +94,7 @@ function repoRepository() {
     create,
     get,
     search,
+    update,
     remove,
     clear,
   };
