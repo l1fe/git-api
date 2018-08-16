@@ -19,4 +19,18 @@ describe('Repo Model', () => {
     expect(repo.stars).to.be.equal(params.stars);
     expect(repo.bookmarked).to.be.equal(params.bookmarked);
   });
+
+  it('should toggle it\'s bookmarked value', () => {
+    const params = {
+      id: 1,
+      name: 'Repository',
+      language: 'javascript',
+      stars: 5,
+      bookmarked: true,
+    };
+    const repo = new Repo(params);
+    expect(repo.bookmarked).to.be.true;
+    repo.toggleBookmark(false);
+    expect(repo.bookmarked).to.be.false;
+  });
 });

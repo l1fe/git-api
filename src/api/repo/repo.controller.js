@@ -24,9 +24,24 @@ function repoController() {
     }
   };
 
+  // Update single repo (currently updates only bookmarked field)
+  const updateRepo = async function updateRepo(req, res, next) {
+    const { id } = req.params;
+    const { bookmarked } = req.body;
+
+    try {
+      const repo = await repoRepository.get(id);
+      repo.toggleBookmark(bookmarked);
+      return res.json(repo);
+    } catch (err) {
+      return next(err);
+    }
+  };
+
   return {
     getRepos,
     getRepo,
+    updateRepo,
   };
 }
 

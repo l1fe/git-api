@@ -6,4 +6,8 @@ function Repo({ id, name, language, stars, bookmarked }) {
   this.bookmarked = bookmarked;
 }
 
+Repo.prototype.toggleBookmark = function toggleBookmark(value) {
+  this.bookmarked = !!value;
+};
+
 module.exports = Repo;

@@ -18,6 +18,11 @@ router.route('/:id')
    * GET /repos/:id
    * Get GitHub repository with given id
    */
-  .get(validate(requestValidation.getRepo), repoController.getRepo);
+  .get(validate(requestValidation.getRepo), repoController.getRepo)
+  /**
+   * PATCH /repos/:id
+   * Update GitHub repository with given options
+   */
+  .patch(validate(requestValidation.updateRepo), repoController.updateRepo);
 
 module.exports = router;
