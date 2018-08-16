@@ -13,8 +13,21 @@ function repoController() {
     }
   };
 
+  // Get single repo
+  const getRepo = async function getRepo(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const repo = await repoRepository.get(id);
+      return res.json(repo);
+    } catch (err) {
+      return next(err);
+    }
+  };
+
   return {
     getRepos,
+    getRepo,
   };
 }
 

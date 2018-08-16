@@ -6,6 +6,11 @@ const requestValidation = {
       name: Joi.string(),
     },
   },
+  getRepo: {
+    params: {
+      id: Joi.string(),
+    },
+  },
 };
 
 module.exports = requestValidation;

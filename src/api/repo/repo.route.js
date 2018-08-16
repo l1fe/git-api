@@ -13,4 +13,11 @@ router.route('/')
    */
   .get(validate(requestValidation.getRepos), repoController.getRepos);
 
+router.route('/:id')
+  /**
+   * GET /repos/:id
+   * Get GitHub repository with given id
+   */
+  .get(validate(requestValidation.getRepo), repoController.getRepo);
+
 module.exports = router;
