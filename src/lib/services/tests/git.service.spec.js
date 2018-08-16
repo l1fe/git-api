@@ -22,7 +22,7 @@ const gitService = proxyquire('../git.service', {
 describe('# Git service unit tests', () => {
   describe('## get() method tests', () => {
     before(() => {
-      apiServiceStub.get = alwaysResolveWithItem(mockData.repository);
+      apiServiceStub.get = alwaysResolveWithItem({ data: mockData.repository });
     });
 
     after(() => {
@@ -56,7 +56,7 @@ describe('# Git service unit tests', () => {
 
   describe('## getAll() method tests', () => {
     before(() => {
-      apiServiceStub.get = alwaysResolveWithItem(mockData.allRepositories);
+      apiServiceStub.get = alwaysResolveWithItem({ data: mockData.allRepositories });
     });
 
     after(() => {
@@ -90,7 +90,7 @@ describe('# Git service unit tests', () => {
 
   describe('## search() method tests', () => {
     before(() => {
-      apiServiceStub.get = alwaysResolveWithItem(mockData.searchRepositories);
+      apiServiceStub.get = alwaysResolveWithItem({ data: mockData.searchRepositories });
     });
 
     after(() => {

@@ -21,7 +21,7 @@ function gitService() {
     const url = `${GITHUB_API_URL}/repositories/${id}`;
     try {
       const resp = await apiService.get(url);
-      return resp;
+      return resp.data;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -31,8 +31,8 @@ function gitService() {
   const getAll = async () => {
     const url = `${GITHUB_API_URL}/repositories`;
     try {
-      const repos = await apiService.get(url);
-      return repos;
+      const resp = await apiService.get(url);
+      return resp.data;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -50,7 +50,7 @@ function gitService() {
 
     try {
       const resp = await apiService.get(url, { params });
-      return resp.items;
+      return resp.data.items;
     } catch (err) {
       return Promise.reject(err);
     }
