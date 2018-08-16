@@ -20,13 +20,13 @@ function repoRepository() {
   };
 
   // Get a repo by id (with in-memory caching)
-  const get = async function get(id) {
-    const savedRepo = ramStorage.get(id);
+  const get = async function get(repoId) {
+    const savedRepo = ramStorage.get(repoId);
     if (!savedRepo) {
       try {
-        const { name, language, stars } = await gitService.get(id);
+        const { id, name, language, stars } = await gitService.get(repoId);
         const repo = new Repo({ id, name, language, stars, bookmarked: false });
-        ramStorage.add(id, repo);
+        ramStorage.addOrUpdate(id, repo);
         return repo;
       } catch (err) {
         return Promise.reject(err);
