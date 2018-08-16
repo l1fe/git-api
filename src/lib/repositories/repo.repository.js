@@ -1,5 +1,6 @@
 const Repo = require('../models/repo.model');
 const gitService = require('../services/git.service');
+const bookmarkRepository = require('./bookmark.repository');
 
 // Repo Repository
 function repoRepository() {
@@ -22,7 +23,10 @@ function repoRepository() {
   const get = async function get({ id }) {
     try {
       const { name, language, starsCount } = await gitService.get(id);
-      return new Repo({ id, name, language, starsCount });
+      const bookmarks = await bookmarkRepository.filter({ repoId: id });
+      // application-wide bookmarks
+      const bookmarked = bookmarks.length > 0;
+      return new Repo({ id, name, language, starsCount, bookmarked });
     } catch (err) {
       return Promise.reject(err);
     }

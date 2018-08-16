@@ -15,7 +15,7 @@ function ramStorage() {
   const addItem = async (collectionName, item) => {
     const collection = getOrCreateCollection(collectionName);
     collection.push(item);
-    return Promise.resolve(item);
+    return item;
   };
 
   // Get an item from specific collection
@@ -25,7 +25,13 @@ function ramStorage() {
     if (!item) {
       return Promise.reject(new Error('Item not found'));
     }
-    return Promise.resolve(item);
+    return item;
+  };
+
+  // Get all items that match given params from specific collection
+  const getItems = async (collectionName, query) => {
+    const collection = getOrCreateCollection(collectionName);
+    return collection.filter(query);
   };
 
   // Remove an item from specific collection
@@ -36,19 +42,19 @@ function ramStorage() {
       return Promise.reject(new Error('Item not found'));
     }
     collection.split(idx, 1);
-    return Promise.resolve();
+    return true;
   };
 
   // Remove a collection
   const clearCollection = async (collectionName) => {
     const collection = getOrCreateCollection(collectionName);
     collection.length = 0;
-    return Promise.resolve();
   };
 
   return {
     addItem,
     getItemById,
+    getItems,
     removeItemById,
     clearCollection,
   };

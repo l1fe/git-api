@@ -10,7 +10,7 @@ function bookmarkRepository() {
     const bookmark = { id: shortid.generate(), repoId };
     try {
       const savedBookmark = await ramStorage.addItem('bookmarks', bookmark);
-      return Promise.resolve(savedBookmark);
+      return savedBookmark;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -19,16 +19,26 @@ function bookmarkRepository() {
   const get = async function get({ id }) {
     try {
       const bookmark = await ramStorage.getItemById('bookmarks', id);
-      return Promise.resolve(new Bookmark(bookmark));
+      return new Bookmark(bookmark);
     } catch (err) {
       return Promise.reject(new Error('Bookmark not found'));
+    }
+  };
+
+  const filter = async function filter({ id, repoId }) {
+    const query = item => (!id || item.id === id) && (!repoId || item.repoId === repoId);
+    try {
+      const bookmarks = await ramStorage.getItems('bookmarks', query);
+      return bookmarks;
+    } catch (err) {
+      return Promise.reject(new Error(err));
     }
   };
 
   const remove = async function remove({ id }) {
     try {
       await ramStorage.removeItemById('bookmarks', id);
-      return Promise.resolve();
+      return true;
     } catch (err) {
       return Promise.reject(new Error('Bookmark not found'));
     }
@@ -36,12 +46,13 @@ function bookmarkRepository() {
 
   const clear = async function clear() {
     await ramStorage.clearCollection('bookmarks');
-    return Promise.resolve();
+    return true;
   };
 
   return {
     create,
     get,
+    filter,
     remove,
     clear,
   };

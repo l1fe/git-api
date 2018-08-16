@@ -11,11 +11,13 @@ const collectionName = 'bookmarks';
 const item = { id: shortidValue, repoId: repoIdValue };
 const alwaysResolve = () => Promise.resolve();
 const alwaysReject = () => Promise.reject(new Error('Got error'));
-const alwaysResolveWithItem = () => Promise.resolve(item);
+
+const alwaysResolveWithItem = itemToResolveWith => () => Promise.resolve(itemToResolveWith);
 
 const storageStub = {
-  addItem: alwaysResolveWithItem,
-  getItemById: alwaysResolveWithItem,
+  addItem: alwaysResolveWithItem(item),
+  getItemById: alwaysResolveWithItem(item),
+  getItems: alwaysResolveWithItem([item]),
   removeItemById: alwaysResolve,
   clearCollection: alwaysResolve,
 };
@@ -100,6 +102,47 @@ describe('# Bookmark repository unit tests', () => {
       expect(storageStub.getItemById.calledOnce).to.be.true;
       expect(storageStub.getItemById.getCall(0).args[0]).to.be.equal(collectionName);
       expect(storageStub.getItemById.getCall(0).args[1]).to.be.eql(params.id);
+    });
+  });
+
+  describe('## filter() method tests', () => {
+    beforeEach(() => {
+      sinon.spy(storageStub, 'getItems');
+    });
+
+    afterEach(() => {
+      storageStub.getItems.restore();
+    });
+
+    it('should be defined', async () => {
+      expect(bookmarkRepository).to.have.property('filter').that.is.a('function');
+    });
+
+    it('should return a promise', async () => {
+      const params = { id: shortidValue };
+      const returnValue = bookmarkRepository.filter(params);
+      expect(returnValue).to.have.property('then').that.is.a('function');
+    });
+
+    it('should reject a promise on storage inner error', () => {
+      storageStub.getItems.restore();
+      sinon.stub(storageStub, 'getItems').callsFake(alwaysReject);
+      const params = { id: shortidValue };
+      const returnValue = bookmarkRepository.filter(params);
+      expect(returnValue).to.be.rejectedWith(Error);
+    });
+
+    it(`should call storage's getItems() method to filter an items with given params stored in collection '${collectionName}'`, async () => {
+      const params = { id: '25' };
+      const collection = [{ id: '25', repoId: '59' }, { id: '26', repoId: '222' }];
+      await bookmarkRepository.filter(params);
+      expect(storageStub.getItems.calledOnce).to.be.true;
+      expect(storageStub.getItems.getCall(0).args[0]).to.be.equal(collectionName);
+      const query = storageStub.getItems.getCall(0).args[1];
+      expect(query).to.be.a('function');
+      const filtered = collection.filter(query);
+      expect(filtered).to.have.lengthOf(1);
+      expect(filtered[0].id).to.be.equal(params.id);
     });
   });
 

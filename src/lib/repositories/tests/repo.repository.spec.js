@@ -10,11 +10,13 @@ const repoIdValue = 'repo-id';
 const repoName = 'repo-name';
 const repoLanguage = 'javascript';
 const repoStarsCount = 5;
+const repoBookmarked = false;
 const item = {
   id: repoIdValue,
   name: repoName,
   language: repoLanguage,
   starsCount: repoStarsCount,
+  bookmarked: repoBookmarked,
 };
 const repositoryMock = require('../../mock-data/repository.mock.json');
 const searchRepositoriesMock = require('../../mock-data/search-repositories.mock.json');
@@ -27,8 +29,13 @@ const gitServiceStub = {
   search: alwaysResolveWithItem(searchRepositoriesMock),
 };
 
+const bookmarkRepositoryStub = {
+  filter: alwaysResolveWithItem([{ id: 'testid', repoId: repoIdValue }]),
+};
+
 const repoRepository = proxyquire('../repo.repository', {
   '../services/git.service': gitServiceStub,
+  './bookmark.repository': bookmarkRepositoryStub,
 });
 
 describe('# Repo repository unit tests', () => {
@@ -48,10 +55,12 @@ describe('# Repo repository unit tests', () => {
   describe('## get() method tests', () => {
     beforeEach(() => {
       sinon.spy(gitServiceStub, 'get');
+      sinon.spy(bookmarkRepositoryStub, 'filter');
     });
 
     afterEach(() => {
       gitServiceStub.get.restore();
+      bookmarkRepositoryStub.filter.restore();
     });
 
     it('should be defined', async () => {
@@ -77,6 +86,13 @@ describe('# Repo repository unit tests', () => {
       await repoRepository.get(params);
       expect(gitServiceStub.get.calledOnce).to.be.true;
       expect(gitServiceStub.get.getCall(0).args[0]).to.be.equal(params.id);
+    });
+
+    it('should call bookmarkService\'s filter() method to retrieve \'bookmarked\' field', async () => {
+      const params = { id: repoIdValue };
+      await repoRepository.get(params);
+      expect(bookmarkRepositoryStub.filter.calledOnce).to.be.true;
+      expect(bookmarkRepositoryStub.filter.getCall(0).args[0]).to.be.eql({ repoId: params.id });
     });
   });
 
