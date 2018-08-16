@@ -57,13 +57,29 @@ describe('# Bookmark repository unit tests', () => {
       expect(returnValue).to.be.rejectedWith(Error);
     });
 
+    it('should call storage\'s queryItems() method to check for duplicates', async () => {
+      sinon.stub(storageStub, 'queryItems').callsFake(() => alwaysResolveWithItem([]));
+
+      const params = { repoId: '25' };
+      await bookmarkRepository.create(params);
+
+      expect(storageStub.queryItems.calledOnce).to.be.true;
+      expect(storageStub.queryItems.getCall(0).args[0]).to.be.a('function');
+
+      storageStub.queryItems.restore();
+    });
+
     it('should call storage\'s setItem() method to create a valid item', async () => {
+      sinon.stub(storageStub, 'queryItems').callsFake(() => alwaysResolveWithItem([]));
+
       const params = { repoId: '25' };
       await bookmarkRepository.create(params);
 
       expect(storageStub.setItem.calledOnce).to.be.true;
       expect(storageStub.setItem.getCall(0).args[0]).to.be.eql(shortidValue);
       expect(storageStub.setItem.getCall(0).args[1]).to.be.eql({ id: shortidValue, ...params });
+
+      storageStub.queryItems.restore();
     });
   });
 

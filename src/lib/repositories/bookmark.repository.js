@@ -8,7 +8,15 @@ const ramStorage = require('../ram-storage');
 function bookmarkRepository() {
   const create = async function create({ repoId }) {
     const bookmark = { id: shortid.generate(), repoId };
+
     try {
+      // assuming that repoId is unique we should check if it already exists
+      const query = item => item.repoId === repoId;
+      const bookmarks = await ramStorage.queryItems(query);
+      if (bookmarks.length > 0) {
+        return Promise.reject(new Error('Item with given repoId already exists'));
+      }
+
       const savedBookmark = await ramStorage.setItem(bookmark.id, bookmark);
       return savedBookmark;
     } catch (err) {
