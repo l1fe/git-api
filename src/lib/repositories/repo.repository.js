@@ -40,7 +40,7 @@ function repoRepository() {
   const search = async function filter(options) {
     try {
       const resp = await gitService.search(options);
-      const repos = resp.items.map(({ id, name, language, stars }) => {
+      const repos = resp.map(({ id, name, language, stars }) => {
         // Get bookmarked status from in-memory storage
         const savedRepo = ramStorage.get(id);
         const bookmarked = savedRepo && savedRepo.bookmarked;

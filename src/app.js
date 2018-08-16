@@ -16,18 +16,17 @@ app.set('port', API_PORT);
 // Setup middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use((err, req, res) => {
+/* eslint-disable-next-line no-unused-vars */
+app.use((err, req, res, next) => {
   // Error handler
   if (err instanceof ev.ValidationError) {
     // Validation-specific
     return res.status(err.status).json(err);
   }
-
   // Show stack trace in DEV mode
   if (DEV_MODE) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(err.stack);
   }
-
   return res.status(httpStatus.INTERNAL_SERVER_ERROR);
 });
 

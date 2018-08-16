@@ -50,7 +50,7 @@ function gitService() {
 
     try {
       const resp = await apiService.get(url, { params });
-      return resp;
+      return resp.items;
     } catch (err) {
       return Promise.reject(err);
     }

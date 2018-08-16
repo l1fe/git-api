@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const requestValidation = {
   getRepos: {
-    params: {
+    query: {
       name: Joi.string(),
     },
   },

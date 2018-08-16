@@ -3,6 +3,8 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const sinon = require('sinon');
 
+const mockData = require('../../mock-data');
+
 const { expect } = chai;
 
 chai.use(chaiAsPromised);
@@ -16,15 +18,12 @@ const defaultItem = {
   bookmarked: false,
 };
 
-const repositoryMock = require('../../mock-data/repository.mock.json');
-const searchRepositoriesMock = require('../../mock-data/search-repositories.mock.json');
-
 const alwaysReject = () => Promise.reject(new Error('Got error'));
 const alwaysResolveWithItem = itemToResolveWith => () => Promise.resolve(itemToResolveWith);
 
 const gitServiceStub = {
-  get: alwaysResolveWithItem(repositoryMock),
-  search: alwaysResolveWithItem(searchRepositoriesMock),
+  get: alwaysResolveWithItem(mockData.repository),
+  search: alwaysResolveWithItem(mockData.searchRepositories.items),
 };
 
 const ramStorageStub = {

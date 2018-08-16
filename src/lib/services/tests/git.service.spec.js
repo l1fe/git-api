@@ -2,10 +2,7 @@ const proxyquire = require('proxyquire');
 const { expect } = require('chai');
 const sinon = require('sinon');
 
-const repositoryMock = require('../../mock-data/repository.mock.json');
-const searchRepositoriesMock = require('../../mock-data/search-repositories.mock.json');
-const allRepositoriesMock = require('../../mock-data/all-repositories.mock.json');
-
+const mockData = require('../../mock-data');
 const { GITHUB_API_URL } = require('../../../config');
 
 const repoIdValue = '1';
@@ -25,7 +22,7 @@ const gitService = proxyquire('../git.service', {
 describe('# Git service unit tests', () => {
   describe('## get() method tests', () => {
     before(() => {
-      apiServiceStub.get = alwaysResolveWithItem(repositoryMock);
+      apiServiceStub.get = alwaysResolveWithItem(mockData.repository);
     });
 
     after(() => {
@@ -59,7 +56,7 @@ describe('# Git service unit tests', () => {
 
   describe('## getAll() method tests', () => {
     before(() => {
-      apiServiceStub.get = alwaysResolveWithItem(allRepositoriesMock);
+      apiServiceStub.get = alwaysResolveWithItem(mockData.allRepositories);
     });
 
     after(() => {
@@ -93,7 +90,7 @@ describe('# Git service unit tests', () => {
 
   describe('## search() method tests', () => {
     before(() => {
-      apiServiceStub.get = alwaysResolveWithItem(searchRepositoriesMock);
+      apiServiceStub.get = alwaysResolveWithItem(mockData.searchRepositories);
     });
 
     after(() => {
