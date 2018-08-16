@@ -16,9 +16,13 @@ app.set('port', API_PORT);
 // Setup middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Setup API routes
+app.use(API_V1, api);
+
+// Setup Error Handler
 /* eslint-disable-next-line no-unused-vars */
 app.use((err, req, res, next) => {
-  // Error handler
   if (err instanceof ev.ValidationError) {
     // Validation-specific
     return res.status(err.status).json(err);
@@ -29,8 +33,5 @@ app.use((err, req, res, next) => {
   }
   return res.status(httpStatus.INTERNAL_SERVER_ERROR);
 });
-
-// Setup API routes
-app.use(API_V1, api);
 
 module.exports = app;
