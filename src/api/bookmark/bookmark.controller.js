@@ -26,7 +26,7 @@ function bookmarkCtrl() {
   const getBookmark = async function getBookmark(req, res, next) {
     try {
       const { id } = req.params;
-      const bookmark = await repos.bookmark.get({ id });
+      const bookmark = await repos.bookmark.get(id);
       return res.status(httpStatus.OK).json(bookmark);
     } catch (err) {
       return next(err);
@@ -36,7 +36,7 @@ function bookmarkCtrl() {
   const removeBookmark = async function removeBookmark(req, res, next) {
     try {
       const { id } = req.params;
-      await repos.bookmark.remove({ id });
+      await repos.bookmark.remove(id);
       return res.status(httpStatus.NO_CONTENT).send();
     } catch (err) {
       return next(err);
