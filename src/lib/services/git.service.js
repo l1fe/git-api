@@ -27,10 +27,21 @@ function gitService() {
     }
   };
 
+  // Get all repositories
+  const getAll = async () => {
+    const url = `${GITHUB_API_URL}/repositories`;
+    try {
+      const repos = await apiService.get(url);
+      return repos;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  };
+
   // Search for repositories with given params
   const search = async ({ name, language, stars } = { }) => {
     if (!name) {
-      return Promise.reject(new Error('Search query is not specified'));
+      return getAll();
     }
 
     const url = `${GITHUB_API_URL}/search/repositories`;
@@ -47,6 +58,7 @@ function gitService() {
 
   return {
     get,
+    getAll,
     search,
   };
 }

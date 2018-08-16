@@ -4,6 +4,7 @@ const sinon = require('sinon');
 
 const repositoryMock = require('../../mock-data/repository.mock.json');
 const searchRepositoriesMock = require('../../mock-data/search-repositories.mock.json');
+const allRepositoriesMock = require('../../mock-data/all-repositories.mock.json');
 
 const { GITHUB_API_URL } = require('../../../config');
 
@@ -56,6 +57,40 @@ describe('# Git service unit tests', () => {
     });
   });
 
+  describe('## getAll() method tests', () => {
+    before(() => {
+      apiServiceStub.get = alwaysResolveWithItem(allRepositoriesMock);
+    });
+
+    after(() => {
+      delete apiServiceStub.get;
+    });
+
+    beforeEach(() => {
+      sinon.spy(apiServiceStub, 'get');
+    });
+
+    afterEach(() => {
+      apiServiceStub.get.restore();
+    });
+
+    it('should be defined', async () => {
+      expect(gitService).to.have.property('getAll').that.is.a('function');
+    });
+
+    it('should return a promise', () => {
+      const returnValue = gitService.get(repoIdValue);
+      expect(returnValue).to.have.property('then').that.is.a('function');
+    });
+
+    it('should call apiService\'s get() method to retrieve all items from GitHub API url', async () => {
+      const apiEndpointUrl = `${GITHUB_API_URL}/repositories`;
+      await gitService.getAll();
+      expect(apiServiceStub.get.calledOnce).to.be.true;
+      expect(apiServiceStub.get.getCall(0).args[0]).to.be.equal(apiEndpointUrl);
+    });
+  });
+
   describe('## search() method tests', () => {
     before(() => {
       apiServiceStub.get = alwaysResolveWithItem(searchRepositoriesMock);
@@ -82,7 +117,14 @@ describe('# Git service unit tests', () => {
       expect(returnValue).to.have.property('then').that.is.a('function');
     });
 
-    it('should call apiService\'s get() method to search for the items that match given query from GitHub API url', async () => {
+    it('should call apiService\'s get() method to search for all items from valid GitHub API url', async () => {
+      const apiEndpointUrl = `${GITHUB_API_URL}/repositories`;
+      await gitService.search();
+      expect(apiServiceStub.get.calledOnce).to.be.true;
+      expect(apiServiceStub.get.getCall(0).args[0]).to.be.equal(apiEndpointUrl);
+    });
+
+    it('should call apiService\'s get() method to search for the items that match given query from valid GitHub API url', async () => {
       const apiEndpointUrl = `${GITHUB_API_URL}/search/repositories`;
       await gitService.search(defaultOptions);
       expect(apiServiceStub.get.calledOnce).to.be.true;
