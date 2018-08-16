@@ -1,50 +1,53 @@
 // Very simple storage
+const storage = require('./storage');
 
 function ramStorage() {
-  const storage = { };
-
-  // Set an item for the given key
-  const setItem = async (key, value) => {
+  // Add an item for the given key
+  const add = (key, value) => {
     if (storage[key]) {
-      return Promise.reject(new Error('Value for this key already exists'));
+      throw new Error('Value for this key already exists');
     }
     storage[key] = value;
     return value;
   };
 
-  // Get an item with the given key
-  const getItem = async (key) => {
-    if (!storage[key]) {
-      return Promise.reject(new Error('Item not found'));
-    }
-    return storage[key];
+  // Add or update an item with the given key
+  const addOrUpdate = (key, value) => {
+    storage[key] = value;
+    return value;
   };
 
-  // Get all items that match the given query
-  const queryItems = async (query) => {
+  // Get an item with with the given key
+  const get = key => storage[key] || null;
+
+  // Get an items that match the given query
+  const queryItems = (query) => {
     const items = Object.values(storage).filter(query);
     return items;
   };
 
   // Remove an item with the given key
-  const removeItem = async (key) => {
+  const remove = (key) => {
     if (!storage[key]) {
-      return Promise.reject(new Error('Item not found'));
+      throw new Error('Item not found');
     }
+
     delete storage[key];
     return true;
   };
 
   // Empty the storage
-  const clear = async () => {
+  const clear = () => {
     Object.keys(storage).forEach(key => delete storage[key]);
+    return true;
   };
 
   return {
-    setItem,
-    getItem,
+    add,
+    addOrUpdate,
+    get,
     queryItems,
-    removeItem,
+    remove,
     clear,
   };
 }

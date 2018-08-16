@@ -8,7 +8,7 @@ describe('Repo Model', () => {
       id: 1,
       name: 'Repository',
       language: 'javascript',
-      starsCount: 5,
+      stars: 5,
       bookmarked: true,
     };
     const repo = new Repo(params);
@@ -16,7 +16,7 @@ describe('Repo Model', () => {
     expect(repo.id).to.be.equal(params.id);
     expect(repo.name).to.be.equal(params.name);
     expect(repo.language).to.be.equal(params.language);
-    expect(repo.starsCount).to.be.equal(params.starsCount);
+    expect(repo.stars).to.be.equal(params.stars);
     expect(repo.bookmarked).to.be.equal(params.bookmarked);
   });
 });

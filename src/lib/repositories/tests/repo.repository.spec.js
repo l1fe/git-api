@@ -5,19 +5,15 @@ import sinon from 'sinon';
 
 chai.use(chaiAsPromised);
 
-const searchQuery = 'tetris';
-const repoIdValue = 'repo-id';
-const repoName = 'repo-name';
-const repoLanguage = 'javascript';
-const repoStarsCount = 5;
-const repoBookmarked = false;
-const item = {
-  id: repoIdValue,
-  name: repoName,
-  language: repoLanguage,
-  starsCount: repoStarsCount,
-  bookmarked: repoBookmarked,
+const defaultSearchOptions = { name: 'tetris' };
+const defaultItem = {
+  id: 'repo-id',
+  name: 'repo-name',
+  language: 'javascript',
+  stars: 5,
+  bookmarked: false,
 };
+
 const repositoryMock = require('../../mock-data/repository.mock.json');
 const searchRepositoriesMock = require('../../mock-data/search-repositories.mock.json');
 
@@ -29,13 +25,15 @@ const gitServiceStub = {
   search: alwaysResolveWithItem(searchRepositoriesMock),
 };
 
-const bookmarkRepositoryStub = {
-  filter: alwaysResolveWithItem([{ id: 'testid', repoId: repoIdValue }]),
+const ramStorageStub = {
+  get: () => null,
+  add: () => defaultItem,
+  addOrUpdate: () => defaultItem,
 };
 
 const repoRepository = proxyquire('../repo.repository', {
   '../services/git.service': gitServiceStub,
-  './bookmark.repository': bookmarkRepositoryStub,
+  '../ram-storage': ramStorageStub,
 });
 
 describe('# Repo repository unit tests', () => {
@@ -45,7 +43,7 @@ describe('# Repo repository unit tests', () => {
     });
 
     it('should return a promise that is rejected (not implemented)', () => {
-      const params = { ...item };
+      const params = { ...defaultItem };
       const returnValue = repoRepository.create(params);
       expect(returnValue).to.have.property('then').that.is.a('function');
       expect(returnValue).to.be.rejectedWith(Error);
@@ -55,12 +53,12 @@ describe('# Repo repository unit tests', () => {
   describe('## get() method tests', () => {
     beforeEach(() => {
       sinon.spy(gitServiceStub, 'get');
-      sinon.spy(bookmarkRepositoryStub, 'filter');
+      sinon.spy(ramStorageStub, 'get');
     });
 
     afterEach(() => {
       gitServiceStub.get.restore();
-      bookmarkRepositoryStub.filter.restore();
+      ramStorageStub.get.restore();
     });
 
     it('should be defined', async () => {
@@ -68,31 +66,27 @@ describe('# Repo repository unit tests', () => {
     });
 
     it('should return a promise', async () => {
-      const params = { id: repoIdValue };
-      const returnValue = repoRepository.get(params);
+      const returnValue = repoRepository.get(defaultItem.id);
       expect(returnValue).to.have.property('then').that.is.a('function');
     });
 
     it('should reject a promise on gitService inner error', () => {
       gitServiceStub.get.restore();
       sinon.stub(gitServiceStub, 'get').callsFake(alwaysReject);
-      const params = { id: repoIdValue };
-      const returnValue = repoRepository.get(params);
+      const returnValue = repoRepository.get(defaultItem.id);
       expect(returnValue).to.be.rejectedWith(Error);
     });
 
-    it('should call gitService\'s get() method to retrieve an item with given \'id\'', async () => {
-      const params = { id: repoIdValue };
-      await repoRepository.get(params);
-      expect(gitServiceStub.get.calledOnce).to.be.true;
-      expect(gitServiceStub.get.getCall(0).args[0]).to.be.equal(params.id);
+    it('should call ramStorage\'s get() method to implement in-memory caching', async () => {
+      await repoRepository.get(defaultItem.id);
+      expect(ramStorageStub.get.calledOnce).to.be.true;
+      expect(ramStorageStub.get.getCall(0).args[0]).to.be.equal(defaultItem.id);
     });
 
-    it('should call bookmarkService\'s filter() method to retrieve \'bookmarked\' field', async () => {
-      const params = { id: repoIdValue };
-      await repoRepository.get(params);
-      expect(bookmarkRepositoryStub.filter.calledOnce).to.be.true;
-      expect(bookmarkRepositoryStub.filter.getCall(0).args[0]).to.be.eql({ repoId: params.id });
+    it('should call gitService\'s get() method to retrieve an item with given id (if it is not in-memory yet)', async () => {
+      await repoRepository.get(defaultItem.id);
+      expect(gitServiceStub.get.calledOnce).to.be.true;
+      expect(gitServiceStub.get.getCall(0).args[0]).to.be.equal(defaultItem.id);
     });
   });
 
@@ -110,24 +104,21 @@ describe('# Repo repository unit tests', () => {
     });
 
     it('should return a promise', async () => {
-      const params = { query: searchQuery };
-      const returnValue = repoRepository.search(params);
+      const returnValue = repoRepository.search(defaultSearchOptions);
       expect(returnValue).to.have.property('then').that.is.a('function');
     });
 
     it('should reject a promise on gitService inner error', () => {
       gitServiceStub.search.restore();
       sinon.stub(gitServiceStub, 'search').callsFake(alwaysReject);
-      const params = { query: searchQuery };
-      const returnValue = repoRepository.search(params);
+      const returnValue = repoRepository.search(defaultSearchOptions);
       expect(returnValue).to.be.rejectedWith(Error);
     });
 
-    it(`should call gitService's search() method to search for the items that match given query '${searchQuery}'`, async () => {
-      const params = { query: searchQuery };
-      await repoRepository.search(params);
+    it('should call gitService\'s search() method to search for the items that match given query', async () => {
+      await repoRepository.search(defaultSearchOptions);
       expect(gitServiceStub.search.calledOnce).to.be.true;
-      expect(gitServiceStub.search.getCall(0).args[0]).to.be.equal(params.query);
+      expect(gitServiceStub.search.getCall(0).args[0]).to.be.equal(defaultSearchOptions);
     });
   });
 
@@ -137,8 +128,7 @@ describe('# Repo repository unit tests', () => {
     });
 
     it('should return a promise that is rejected (not implemented)', () => {
-      const params = { id: repoIdValue };
-      const returnValue = repoRepository.remove(params);
+      const returnValue = repoRepository.remove(defaultItem.id);
       expect(returnValue).to.have.property('then').that.is.a('function');
       expect(returnValue).to.be.rejectedWith(Error);
     });

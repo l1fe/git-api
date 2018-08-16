@@ -1,6 +1,6 @@
 const Repo = require('../models/repo.model');
 const gitService = require('../services/git.service');
-const bookmarkRepository = require('./bookmark.repository');
+const ramStorage = require('../ram-storage');
 
 // Repo Repository
 function repoRepository() {
@@ -19,31 +19,42 @@ function repoRepository() {
     return Promise.reject(new Error('Not implemented'));
   };
 
-  // Get a repo by id
-  const get = async function get({ id }) {
-    try {
-      const { name, language, starsCount } = await gitService.get(id);
-      const bookmarks = await bookmarkRepository.filter({ repoId: id });
-      // application-wide bookmarks
-      const bookmarked = bookmarks.length > 0;
-      return new Repo({ id, name, language, starsCount, bookmarked });
-    } catch (err) {
-      return Promise.reject(err);
+  // Get a repo by id (with in-memory caching)
+  const get = async function get(id) {
+    const savedRepo = ramStorage.get(id);
+    if (!savedRepo) {
+      try {
+        const { name, language, stars } = await gitService.get(id);
+        const repo = new Repo({ id, name, language, stars, bookmarked: false });
+        ramStorage.add(id, repo);
+        return repo;
+      } catch (err) {
+        return Promise.reject(err);
+      }
     }
+
+    return savedRepo;
   };
 
-  // Search for a repo with a given query
-  const search = async function search({ query }) {
+  // Search for a repositories with given query options
+  const search = async function filter(options) {
     try {
-      const repos = await gitService.search(query);
-      return repos
-        .items
-        .slice(0, 5)
-        .map(({ id, name, language, starsCount }) => (
-          new Repo({ id, name, language, starsCount })
-        ));
+      const resp = await gitService.search(options);
+      const repos = resp.items.map(({ id, name, language, stars }) => {
+        // Get bookmarked status from in-memory storage
+        const savedRepo = ramStorage.get(id);
+        const bookmarked = savedRepo && savedRepo.bookmarked;
+        return new Repo({ id, name, language, stars, bookmarked });
+      });
+
+      // Put those items into in-memory storage
+      repos.forEach((repo) => {
+        ramStorage.addOrUpdate(repo);
+      });
+
+      return repos;
     } catch (err) {
-      return Promise.reject(err);
+      return Promise.reject(new Error(err));
     }
   };
 

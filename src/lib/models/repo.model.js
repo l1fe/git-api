@@ -1,8 +1,8 @@
-function Repo({ id, name, language, starsCount, bookmarked }) {
+function Repo({ id, name, language, stars, bookmarked }) {
   this.id = id;
   this.name = name;
   this.language = language;
-  this.starsCount = starsCount;
+  this.stars = stars;
   this.bookmarked = bookmarked;
 }
 

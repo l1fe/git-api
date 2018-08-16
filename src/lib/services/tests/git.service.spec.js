@@ -8,7 +8,10 @@ const searchRepositoriesMock = require('../../mock-data/search-repositories.mock
 const { GITHUB_API_URL } = require('../../../config');
 
 const repoIdValue = '1';
-const searchQuery = 'tetris';
+
+const defaultOptions = {
+  name: 'tetris',
+};
 
 const alwaysResolveWithItem = itemToResolveWith => () => Promise.resolve(itemToResolveWith);
 
@@ -75,17 +78,18 @@ describe('# Git service unit tests', () => {
     });
 
     it('should return a promise', () => {
-      const returnValue = gitService.search(searchQuery);
+      const returnValue = gitService.search(defaultOptions);
       expect(returnValue).to.have.property('then').that.is.a('function');
     });
 
-    it(`should call apiService's get() method to search for the items that match given query '${searchQuery}' from GitHub API url`, async () => {
+    it('should call apiService\'s get() method to search for the items that match given query from GitHub API url', async () => {
       const apiEndpointUrl = `${GITHUB_API_URL}/search/repositories`;
-      const params = { q: searchQuery };
-      await gitService.search(searchQuery);
+      await gitService.search(defaultOptions);
       expect(apiServiceStub.get.calledOnce).to.be.true;
       expect(apiServiceStub.get.getCall(0).args[0]).to.be.equal(apiEndpointUrl);
-      expect(apiServiceStub.get.getCall(0).args[1]).to.be.eql({ params });
+      expect(apiServiceStub.get.getCall(0).args[1]).to.be.eql({
+        params: { q: defaultOptions.name },
+      });
     });
   });
 });
