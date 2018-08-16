@@ -1,5 +1,5 @@
-import createApi from './create-api';
+const createApi = require('./create-api');
 
 const api = createApi();
 
-export default api;
+module.exports = api;

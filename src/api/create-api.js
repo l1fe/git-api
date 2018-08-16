@@ -1,7 +1,7 @@
-import { Router } from 'express';
+const { Router } = require('express');
 
-import repoRoutes from './repo/repo.route';
-import bookmarkRoutes from './bookmark/bookmark.route';
+const repoRoutes = require('./repo/repo.route');
+const bookmarkRoutes = require('./bookmark/bookmark.route');
 
 const createApi = () => {
   const api = Router();
@@ -12,4 +12,4 @@ const createApi = () => {
   return api;
 };
 
-export default createApi;
+module.exports = createApi;

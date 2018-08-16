@@ -33,7 +33,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
-    "errorhandler": "^1.5.0",
     "express": "^4.16.3",
     "express-validation": "^1.0.2",
     "http-status": "^1.2.0",
