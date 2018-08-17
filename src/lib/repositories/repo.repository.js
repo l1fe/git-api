@@ -73,11 +73,11 @@ function repoRepository() {
         ramStorage.addOrUpdate(repo.id, repo);
       });
 
-      if (showOnlyBookmarked) {
-        return repos.filter(item => item.bookmarked);
-      }
-
-      return repos;
+      // Retrieve required items from prefilled cache
+      return ramStorage.queryItems(item => (
+        (!showOnlyBookmarked || item.bookmarked)
+        && (!options.name || item.name.includes(options.name))
+      ));
     } catch (err) {
       return Promise.reject(new Error(err));
     }
