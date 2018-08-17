@@ -58,7 +58,7 @@ function repoRepository() {
   };
 
   // Search for a repositories with given query options
-  const search = async function filter(options, showBookmarked) {
+  const search = async function filter(options, showOnlyBookmarked) {
     try {
       const resp = await gitService.search(options);
       const repos = resp.map(({ id, name, language, stars }) => {
@@ -73,15 +73,8 @@ function repoRepository() {
         ramStorage.addOrUpdate(repo.id, repo);
       });
 
-      if (!options.name && showBookmarked) {
-        // In case we don't have any options and just want to show only bookmarked ones
-        // Check other elements that were cached before and not included in the current API call
-        const reposIds = repos.map(({ id }) => id);
-        const otherRepos = ramStorage.queryItems(item => (
-          !reposIds.includes(item.id) && item.bookmarked
-        ));
-        const currentRepos = repos.filter(item => item.bookmarked);
-        return [...currentRepos, ...otherRepos];
+      if (showOnlyBookmarked) {
+        return repos.filter(item => item.bookmarked);
       }
 
       return repos;
