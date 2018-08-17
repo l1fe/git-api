@@ -24,8 +24,8 @@ function repoRepository() {
     const savedRepo = ramStorage.get(id);
     if (!savedRepo) {
       try {
-        const { name, language, stars } = await gitService.get(id);
-        const repo = new Repo({ id, name, language, stars, bookmarked: false });
+        const { name, description } = await gitService.get(id);
+        const repo = new Repo({ id, name, description, bookmarked: false });
         ramStorage.addOrUpdate(id, repo);
         return repo;
       } catch (err) {
@@ -42,8 +42,8 @@ function repoRepository() {
 
     if (!savedRepo) {
       try {
-        const { name, language, stars } = await gitService.get(id);
-        const repo = new Repo({ id, name, language, stars, bookmarked: false, ...values });
+        const { name, description } = await gitService.get(id);
+        const repo = new Repo({ id, name, description, bookmarked: false, ...values });
         ramStorage.addOrUpdate(id, repo);
         return repo;
       } catch (err) {
@@ -61,11 +61,11 @@ function repoRepository() {
   const search = async function filter(options, showOnlyBookmarked) {
     try {
       const resp = await gitService.search(options);
-      const repos = resp.map(({ id, name, language, stars }) => {
+      const repos = resp.map((item) => {
         // Get bookmarked status from in-memory storage
-        const savedRepo = ramStorage.get(id);
+        const savedRepo = ramStorage.get(item.id);
         const bookmarked = !!(savedRepo && savedRepo.bookmarked);
-        return new Repo({ id, name, language, stars, bookmarked });
+        return new Repo({ ...item, bookmarked });
       });
 
       // Put those items into in-memory storage

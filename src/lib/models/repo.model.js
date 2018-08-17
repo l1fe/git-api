@@ -1,9 +1,9 @@
-function Repo({ id, name, language, stars, bookmarked }) {
+function Repo({ id, name, description, bookmarked, url }) {
   this.id = id;
   this.name = name;
-  this.language = language;
-  this.stars = stars;
+  this.description = description;
   this.bookmarked = bookmarked;
+  this.url = url;
 }
 
 module.exports = Repo;
