@@ -74,7 +74,7 @@ yarn start
 ```js
 // value can be either true or false
 {
-	"bookmarked": true
+  "bookmarked": true
 }
 ```
 * **Success Response Status:** `200 OK`
