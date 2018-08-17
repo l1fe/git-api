@@ -25,9 +25,8 @@ yarn start
 **API Specification**
 ----
 
-###
+### Get all repos (*optionally can filter by query string params*)
 * **URL:**	`GET /api/repos`
-* **Description:** Get all repos (*optionally can filter by query string params*)
 * **Query String Params (Optional)** `name`, `bookmarked`
 * **Success Response Status:** `200 OK`
 * **Success Response Body:**
@@ -52,9 +51,8 @@ yarn start
 
 * **Error Response:** `400 Bad Request`
 
-###
+### Get the repo with the given `id`
 * **URL:**	`GET /api/repos/:id`
-* **Description:** Get the repo with the given `id`
 * **URL Params (required)** `id`
 * **Success Response Status:** `200 OK`
 * **Success Response Body:**
@@ -69,10 +67,16 @@ yarn start
 ```
 * **Error Response:** `404 Not Found`
 
-###
+### Update the repo's `bookmarked` value
 * **URL:**	`PATCH /api/repos/:id`
-* **Description:** Update the repo's `bookmarked` value
-* **URL Params (required)** `id`
+* **URL Params (required):** `id`
+* **Request Body (required):**
+```js
+// value can be either true or false
+{
+	"bookmarked": true
+}
+```
 * **Success Response Status:** `200 OK`
 * **Success Response Body:**
 ```js
