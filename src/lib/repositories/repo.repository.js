@@ -24,8 +24,8 @@ function repoRepository() {
     const savedRepo = ramStorage.get(id);
     if (!savedRepo) {
       try {
-        const { name, description } = await gitService.get(id);
-        const repo = new Repo({ id, name, description, bookmarked: false });
+        const { name, description, url } = await gitService.get(id);
+        const repo = new Repo({ id, name, description, url, bookmarked: false });
         ramStorage.addOrUpdate(id, repo);
         return repo;
       } catch (err) {
@@ -42,8 +42,8 @@ function repoRepository() {
 
     if (!savedRepo) {
       try {
-        const { name, description } = await gitService.get(id);
-        const repo = new Repo({ id, name, description, bookmarked: false, ...values });
+        const { name, description, url } = await gitService.get(id);
+        const repo = new Repo({ id, name, description, url, bookmarked: false, ...values });
         ramStorage.addOrUpdate(id, repo);
         return repo;
       } catch (err) {
