@@ -39,13 +39,13 @@ function gitService() {
   };
 
   // Search for repositories with given params
-  const search = async ({ name, language, stars } = { }) => {
+  const search = async ({ name } = { }) => {
     if (!name) {
       return getAll();
     }
 
     const url = `${GITHUB_API_URL}/search/repositories`;
-    const query = encodeGitQuery({ name, language, stars });
+    const query = encodeGitQuery({ name });
     const params = { q: query };
 
     try {
