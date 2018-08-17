@@ -1,6 +1,6 @@
 ## What is `git-api` ?
 
-`git-api` a small *NodeJS* HTTP API server designed for searching for Github repositories
+`git-api` is a small *NodeJS* HTTP API server designed for searching for Github repositories
 
 ## Getting Started
 Before installing the app make sure that you have `node`, `npm` , `npx` and `yarn` (optionally) installed globally.
