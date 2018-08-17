@@ -21,6 +21,17 @@ yarn install
 yarn start
 ```
 
+## Running modes
+
+`git-api` can consume either GitHub API or just mocked data (that is set up by default).
+To use an actual API, just set env variable `GITHUB_API` to `github`
+(you can do it directly in the `package.json` :
+
+```js
+  "scripts": {
+    "dev": "npx nodemon --exec \"NODE_ENV=development API_PORT=8080 GITHUB_API=test npx babel-node src\"",
+  },
+```
 
 **API Specification**
 ----
