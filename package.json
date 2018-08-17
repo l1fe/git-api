@@ -6,7 +6,7 @@
   "author": "Igor Naumov <igor.naumov.17@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "npx nodemon --exec \"NODE_ENV=development API_PORT=3000 GITHUB_API=test npx babel-node src\"",
+    "dev": "npx nodemon --exec \"NODE_ENV=development API_PORT=8080 GITHUB_API=test npx babel-node src\"",
     "start": "npm run dev",
     "eslint": "npx eslint src",
     "lint": "npm run eslint",

@@ -22,8 +22,8 @@ const alwaysReject = () => Promise.reject(new Error('Got error'));
 const alwaysResolveWithItem = itemToResolveWith => () => Promise.resolve(itemToResolveWith);
 
 const gitServiceStub = {
-  get: alwaysResolveWithItem(mockData.repository),
-  search: alwaysResolveWithItem(mockData.searchRepositories.items),
+  get: alwaysResolveWithItem(mockData.repository.data),
+  search: alwaysResolveWithItem(mockData.searchRepositories.data.items),
 };
 
 const ramStorageStub = {
