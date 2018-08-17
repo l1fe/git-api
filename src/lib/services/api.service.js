@@ -19,9 +19,24 @@ function apiService() {
         if (path === `${GITHUB_API_URL}/repositories`) {
           resolvedData = mockData.allRepositories;
         } else if (path.startsWith(`${GITHUB_API_URL}/repositories/`)) {
-          resolvedData = mockData.repository;
+          const lastSlashIdx = path.lastIndexOf('/');
+          const id = path.substr(lastSlashIdx);
+          const item = mockData.allRepositories.data.search(entry => entry.id === id);
+          if (item === -1) {
+            return Promise.reject(new Error('Item not found'));
+          }
+          resolvedData = item;
         } else if (path.startsWith(`${GITHUB_API_URL}/search/repositories`)) {
-          resolvedData = mockData.searchRepositories;
+          const plusCharIdx = params.q.indexOf('+');
+          let searchName = params.q;
+          if (plusCharIdx > 0) {
+            searchName = params.q.substr(0, plusCharIdx);
+          }
+          resolvedData = {
+            data: {
+              items: mockData.allRepositories.data.filter(item => item.name.includes(searchName)),
+            },
+          };
         }
 
         return Promise.resolve(resolvedData);
